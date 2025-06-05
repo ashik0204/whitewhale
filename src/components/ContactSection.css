@@ -5,6 +5,14 @@
     background-size: cover;
     background-position: center 70%;
     color: white;
+    a{
+        color: rgb(8, 7, 71);
+    }
+    .container p{
+        font-size:  24px;
+
+
+    }
 }
 
 .social-links {

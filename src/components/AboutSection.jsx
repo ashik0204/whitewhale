@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './common.css';
 import './AboutSection.css';
 
 const AboutSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const slideshowRef = useRef(null);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  
+  // Minimum distance to be considered a swipe
+  const minSwipeDistance = 50;
   
   const slides = [
     {
@@ -40,6 +46,53 @@ const AboutSection = () => {
   const goToNextSlide = () => {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
+  
+  // Touch event handlers
+  const onTouchStart = (e) => {
+    setTouchEnd(null); // Reset touchEnd
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+  
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      goToNextSlide();
+    } else if (isRightSwipe) {
+      goToPrevSlide();
+    }
+  };
+  
+  // Add visual feedback during swipe
+  useEffect(() => {
+    if (!slideshowRef.current || touchStart === null || touchEnd === null) return;
+    
+    const distance = touchStart - touchEnd;
+    // Limit the transform to avoid excessive movement
+    const maxOffset = 50;
+    const offset = Math.abs(distance) > maxOffset ? 
+                   (distance > 0 ? -maxOffset : maxOffset) : 
+                   -distance;
+
+    const currentTransform = -currentSlide * 100;
+    const newTransform = currentTransform + (offset / slideshowRef.current.offsetWidth * 100);
+    
+    slideshowRef.current.style.transform = `translateX(${newTransform}%)`;
+    
+    return () => {
+      if (slideshowRef.current) {
+        slideshowRef.current.style.transform = `translateX(${currentTransform}%)`;
+      }
+    };
+  }, [touchStart, touchEnd, currentSlide]);
 
   return (
     <section className="section" id="about">
@@ -47,7 +100,14 @@ const AboutSection = () => {
         <h2>Our Story</h2>
         
         <div className="slideshow-container">
-          <div className="slideshow-slides" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+          <div 
+            className="slideshow-slides" 
+            ref={slideshowRef}
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             {slides.map((slide) => (
               <div key={slide.id} className="slide">
                 <div 

@@ -2,16 +2,30 @@
   padding: 5rem 0;
   background-color: #f9fafb;
 }
-#blog .container{
-    h2{
-        border: 4px solid rgb(230, 243, 250);
-        border-radius: 10px;
-        text-align: center;
-        color: rgb(0, 89, 111);
-        background: url('../assets/new_our_story_header.jpeg') no-repeat 20% 20%;
-        background-size: cover;
-        padding: 1em 1em;
-    }
+
+/* Fix the nested CSS and make the header standalone */
+#blog .container h2 {
+  border: 4px solid rgb(230, 243, 250);
+  border-radius: 10px;
+  text-align: center;
+  color: rgb(240, 244, 245);
+  background: url('../assets/dark_aesthetic_bg.jpeg') no-repeat 20% 20%;
+  background-size: cover;
+  padding: 1em 1em;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#blog .section-intro {
+  max-width: 1200px; /* Match the header width */
+  margin: 1.5rem auto 3rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6b7280;
+  border-radius: 8px;
+  border: 2px solid rgb(1,31,71);
+  padding: 1em;
+  background-color: white;
 }
 
 .section-intro {
@@ -122,7 +136,7 @@
 }
 
 .blog-cta {
-  background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+  background: rgb(1,31,71);
   border-radius: 12px;
   padding: 3rem;
   text-align: center;
