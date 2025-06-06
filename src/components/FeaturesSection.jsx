@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FeaturesSection.css';
 import './common.css';
 
 const FeaturesSection = () => {
-  // Track which feature cards are expanded
-  const [expandedFeatures, setExpandedFeatures] = useState({});
-  
-  const toggleFeature = (featureId) => {
-    setExpandedFeatures(prev => ({
-      ...prev,
-      [featureId]: !prev[featureId]
-    }));
-  };
+  // Track which feature is currently selected
+  const [selectedFeatureId, setSelectedFeatureId] = useState(null);
+  // Track current page of features
+  const [currentPage, setCurrentPage] = useState(0);
+  // Number of features to show per page
+  const featuresPerPage = 3;
   
   // Feature data from the content provided
   const features = [
@@ -133,6 +130,50 @@ const FeaturesSection = () => {
       author: 'Product Ops Lead, API.io'
     }
   ];
+  
+  // Calculate total number of pages
+  const totalPages = Math.ceil(features.length / featuresPerPage);
+  
+  // Get current features to display
+  const getCurrentFeatures = () => {
+    const start = currentPage * featuresPerPage;
+    return filteredFeatures.slice(start, start + featuresPerPage);
+  };
+  
+  // Navigation functions
+  const goToNextPage = (e) => {
+    e.stopPropagation();
+    setCurrentPage((prev) => (prev + 1) % totalPages);
+  };
+  
+  const goToPrevPage = (e) => {
+    e.stopPropagation();
+    setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
+  };
+  
+  // Get the selected feature
+  const selectedFeature = features.find(f => f.id === selectedFeatureId);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Toggle selected feature
+  const selectFeature = (featureId) => {
+    setSelectedFeatureId(featureId === selectedFeatureId ? null : featureId);
+  };
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        goToNextPage(e);
+      } else if (e.key === 'ArrowLeft') {
+        goToPrevPage(e);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentPage, totalPages]);
+const filteredFeatures = features.filter(feature =>
+  feature.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   return (
     <section className="section" id="features">
@@ -145,47 +186,90 @@ const FeaturesSection = () => {
           </p>
         </div>
         
-        <div className="features-grid">
-          {features.map((feature) => (
-            <div 
-              key={feature.id} 
-              className={`feature-card ${expandedFeatures[feature.id] ? 'expanded' : ''}`}
-              onClick={() => toggleFeature(feature.id)}
-            >
-              <div className="feature-header">
-                <h3>{feature.title}</h3>
-                <span className="expand-icon">{expandedFeatures[feature.id] ? '−' : '+'}</span>
-              </div>
-              
-              <div className="feature-content">
-                <p className="feature-overview">{feature.overview}</p>
+          <input className="search" id="feature-search" type="text" placeholder="Search features..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+        <div className="features-carousel">
+          <button 
+            className="nav-button prev-button" 
+            onClick={goToPrevPage}
+            aria-label="Previous features"
+          >
+            &#8592;
+          </button>
+
+          <div className="features-grid">
+            {getCurrentFeatures().map((feature) => (
+              <div 
+                key={feature.id} 
+                className={`feature-card ${selectedFeatureId === feature.id ? 'selected' : ''}`}
+                onClick={() => selectFeature(feature.id)}
+              >
+                <div className="feature-header">
+                  <h3>{feature.title}</h3>
+                </div>
                 
-                <div className="feature-details">
-                  <div className="benefits-section">
-                    <h4>Key Benefits:</h4>
-                    <ul>
-                      {feature.benefits.map((benefit, index) => (
-                        <li key={index}>{benefit}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div className="use-case-section">
-                    <h4>Use Case:</h4>
-                    <p>{feature.useCase}</p>
-                  </div>
-                  
-                  <div className="testimonial-section">
-                    <blockquote>
-                      {feature.quote}
-                      <footer>— {feature.author}</footer>
-                    </blockquote>
-                  </div>
+                <div className="feature-content">
+                  <p className="feature-overview">{feature.overview}</p>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
+          
+          <button 
+            className="nav-button next-button" 
+            onClick={goToNextPage}
+            aria-label="Next features"
+          >
+            &#8594;
+          </button>
+        </div>
+        
+        <div className="pagination-indicator">
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <span 
+              key={index} 
+              className={`page-dot ${currentPage === index ? 'active' : ''}`}
+              onClick={() => setCurrentPage(index)}
+            />
           ))}
         </div>
+        
+        {selectedFeature && (
+          <div className="feature-details-container">
+            <div className="feature-details-header">
+              <h3>{selectedFeature.title}</h3>
+              <button 
+                className="close-button" 
+                onClick={() => setSelectedFeatureId(null)}
+                aria-label="Close details"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="feature-details-content">
+              <div className="benefits-section">
+                <h4>Key Benefits:</h4>
+                <ul>
+                  {selectedFeature.benefits.map((benefit, index) => (
+                    <li key={index}>{benefit}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="use-case-section">
+                <h4>Use Case:</h4>
+                <p>{selectedFeature.useCase}</p>
+              </div>
+              
+              <div className="testimonial-section">
+                <blockquote>
+                  {selectedFeature.quote}
+                  <footer>— {selectedFeature.author}</footer>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        )}
         
         <div className="cta-container">
           <p>

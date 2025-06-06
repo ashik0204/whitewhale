@@ -4,7 +4,8 @@
   text-align: center; /* fixed property name */
   color: rgb(230, 235, 236);
   background-image: url('../assets/dark_aesthetic_bg.jpeg');
-  background-repeat: repeat;
+  background-repeat: no-repeat;
+  background-size: cover;
   background-position: 20% 20%;
   background-color: rgba(255, 255, 255, 0.95); /* separate and valid */
   

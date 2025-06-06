@@ -29,13 +29,75 @@
   margin-bottom: 3rem;
 }
 
+/* New carousel layout */
+.features-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  margin-bottom: 3rem;
+  width: 100%;
 }
 
+.nav-button {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin: 0 1rem;
+  z-index: 2;
+}
+
+.nav-button:hover {
+  background: rgba(56, 189, 248, 0.4);
+}
+
+/* Pagination dots */
+.pagination-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.page-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-dot.active {
+  background-color: #38bdf8;
+  transform: scale(1.2);
+}
+#feature-search{
+  margin-bottom: 2rem;
+  border: rgba(255, 255, 255, 0.05) solid 2px;
+  border-radius: 10px;
+  text-align: center;
+  color: rgb(240, 244, 245);
+  background-size: cover;
+  padding: 0.1em;
+  font-size: 1.5em;
+}
+/* Feature cards */
 .feature-card {
   border: rgba(255, 255, 255, 0.05) solid 2px;
   background-color: rgb(1, 31, 71);
@@ -44,6 +106,9 @@
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
 }
 
 .feature-card:hover {
@@ -52,18 +117,13 @@
   border-color: rgba(56, 189, 248, 0.5);
 }
 
-.feature-card.expanded {
-  grid-column: span 3;
-  transform: translateY(-5px);
+.feature-card.selected {
   border-color: #38bdf8;
   box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
 }
 
 .feature-header {
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 1.2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -71,39 +131,71 @@
   color: #38bdf8;
   margin: 0;
   font-size: 1.25rem;
-}
-
-.expand-icon {
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  transition: transform 0.3s ease;
-}
-
-.feature-card.expanded .expand-icon {
-  transform: rotate(180deg);
+  text-align: center;
 }
 
 .feature-content {
-  padding: 1.5rem;
+  padding: 1rem;
+  flex: 1;
 }
 
 .feature-overview {
   color: #fff;
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.feature-details {
-  display: none;
+/* Feature details container - where expanded content is shown */
+.feature-details-container {
+  border: 2px solid #38bdf8;
+  border-radius: 12px;
+  background-color: rgba(1, 31, 71, 0.95);
+  margin: 1rem 0 3rem;
+  padding: 0;
   animation: fadeIn 0.5s ease;
+  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
+  overflow: hidden;
 }
 
-.feature-card.expanded .feature-details {
+.feature-details-header {
+  background-color: rgba(56, 189, 248, 0.1);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.feature-details-header h3 {
+  color: #38bdf8;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  color: #38bdf8;
+  transform: scale(1.1);
+}
+
+.feature-details-content {
+  padding: 1.5rem;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .benefits-section h4,
@@ -179,9 +271,9 @@
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .feature-card.expanded {
-    grid-column: span 2;
+  
+  .feature-details-content {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -190,16 +282,19 @@
     grid-template-columns: 1fr;
   }
 
-  .feature-card.expanded {
-    grid-column: span 1;
-  }
-
-  .feature-card.expanded .feature-details {
+  .feature-details-content {
     grid-template-columns: 1fr;
   }
 
   #features .container {
     padding: 1rem;
+  }
+  
+  .nav-button {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    margin: 0 0.5rem;
   }
 }
 
@@ -209,7 +304,7 @@
   }
 
   .feature-content {
-    padding: 1rem;
+    padding: 0.8rem;
   }
 
   .feature-header h3 {
@@ -218,5 +313,14 @@
 
   .description {
     padding: 0.75rem;
+  }
+  
+  .feature-details-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .feature-details-content {
+    padding: 1rem;
+    gap: 1rem;
   }
 }

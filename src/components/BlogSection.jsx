@@ -6,6 +6,8 @@ import b2bStrategyImage from '../assets/b2b-strategy.png';
 import salesTechImage from '../assets/sales-tech.png';
 
 const BlogSection = () => {
+  const [searchterm, setsearchterm] = React.useState("");
+
   const blogPosts = [
     {
       id: 1,
@@ -38,15 +40,15 @@ const BlogSection = () => {
       tags: ["Technology", "Integration", "ROI"]
     }
   ];
-
+  const filteredBlogPosts = blogPosts.filter(post => post.title.toLowerCase().includes(searchterm.toLowerCase()));
   return (
     <section className="section" id="blog">
       <div className="container">
         <h2>Latest Insights</h2>
         <p className="section-intro">Expert perspectives on revenue acceleration, AI-powered sales, and enterprise growth strategies.</p>
-        
+        <input className="search" id="blog-search" type="text" placeholder='Search' onChange={(e) => {setsearchterm(e.target.value)}}/>
         <div className="blog-grid">
-          {blogPosts.map(post => (
+          {filteredBlogPosts.map(post => (
             <div key={post.id} className="blog-card">
               <div className="blog-image-container">
                 <img src={post.image} alt={post.title} className="blog-image" />
