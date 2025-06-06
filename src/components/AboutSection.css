@@ -37,6 +37,8 @@
   height: 45%;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box; 
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Remove default mobile tap highlight */
 }
 
 .about-panel:before {
@@ -67,6 +69,7 @@
   font-weight: 600;
   margin: 0;
   transition: transform 0.3s ease;
+  padding: 8px 0;
 }
 
 .about-panel:hover h3, .about-panel.active h3 {
@@ -92,6 +95,11 @@
   margin-bottom: 1.5rem;
   color: #38bdf8;
   text-align: center;
+}
+.about-center p {
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
 }
 
 .about-content {
@@ -150,6 +158,7 @@
   .about-panel {
     height: 120px;
     width: 50%;
+    transition: box-shadow 0.3s ease; /* Simplified transition for mobile */
   }
   
   .about-center {
@@ -166,5 +175,10 @@
     width: 100%;
     height: 80px;
     margin-bottom: 15px;
+  }
+  
+  /* Disable hover-specific effects on smaller touch devices */
+  .about-panel:hover {
+    transform: none; /* Ensure no transform is applied on mobile */
   }
 }

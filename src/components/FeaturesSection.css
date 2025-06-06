@@ -1,69 +1,222 @@
-#features .container{
-  h2 {
-        border: 4px solid rgb(230, 243, 250);
-        border-radius: 10px;
-        text-align: center;
-        color: rgb(240, 244, 245);
-        background: url('../assets/dark_aesthetic_bg.jpeg') no-repeat 20% 20%;
-        background-size: cover;
-        padding: 1em 1em;
-  }
-  /* p{
-    color:white;
-  } */
-
-
+#features .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
 }
-.description{
-  border:rgb(255,255,255,0.05) solid 2px;
+
+#features .container h2 {
+  border: 4px solid rgb(230, 243, 250);
+  border-radius: 10px;
+  text-align: center;
+  color: rgb(240, 244, 245);
+  background: url('../assets/dark_aesthetic_bg.jpeg') no-repeat 20% 20%;
+  background-size: cover;
+  padding: 1em 1em;
+  margin-bottom: 2rem;
+}
+
+/* p{
+  color:white;
+} */
+
+.description {
+  border: rgba(255, 255, 255, 0.05) solid 2px;
   border-radius: 10px;
   text-align: center;
   color: rgb(240, 244, 245);
   background-size: cover;
   padding: 1em 1em;
+  margin-bottom: 3rem;
 }
-.value-prop {
+
+.features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  margin: 3rem 0;
+  margin-bottom: 3rem;
 }
 
-.value-card {
-  border:rgb(255,255,255,0.05) solid 2px;
-  background-color: rgb(1,31,71);
-  padding: 2rem;
+.feature-card {
+  border: rgba(255, 255, 255, 0.05) solid 2px;
+  background-color: rgb(1, 31, 71);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.5);
+}
+
+.feature-card.expanded {
+  grid-column: span 3;
+  transform: translateY(-5px);
+  border-color: #38bdf8;
+  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+}
+
+.feature-header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature-header h3 {
+  color: #38bdf8;
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.expand-icon {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
   transition: transform 0.3s ease;
 }
 
-.value-card:hover {
-  transform: translateY(-5px);
+.feature-card.expanded .expand-icon {
+  transform: rotate(180deg);
 }
-.value-card {
-  h3{
-    color:white;
+
+.feature-content {
+  padding: 1.5rem;
+}
+
+.feature-overview {
+  color: #fff;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.feature-details {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.feature-card.expanded .feature-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.benefits-section h4,
+.use-case-section h4,
+.testimonial-section h4 {
+  color: #38bdf8;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.benefits-section ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.benefits-section ul li {
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.use-case-section p {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.testimonial-section blockquote {
+  color: #fff;
+  font-style: italic;
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 3px solid #38bdf8;
+}
+
+.testimonial-section blockquote footer {
+  margin-top: 0.5rem;
+  color: #38bdf8;
+  font-size: 0.85rem;
+  font-style: normal;
+}
+
+.cta-container {
+  border: rgba(255, 255, 255, 0.05) solid 2px;
+  border-radius: 10px;
+  text-align: center;
+  color: rgb(240, 244, 245);
+  background-size: cover;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.cta-container p {
+  font-size: 1.2rem;
+  color: #fff;
+  margin: 0;
+}
+
+/* Animation for expanding cards */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  p{
-    color:white;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 960px) {
-  .value-prop {
+/* Media Queries for Responsive Design */
+@media (max-width: 1200px) {
+  .features-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .feature-card.expanded {
+    grid-column: span 2;
   }
 }
 
 @media (max-width: 768px) {
-  .value-prop {
+  .features-grid {
     grid-template-columns: 1fr;
+  }
+
+  .feature-card.expanded {
+    grid-column: span 1;
+  }
+
+  .feature-card.expanded .feature-details {
+    grid-template-columns: 1fr;
+  }
+
+  #features .container {
+    padding: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .value-card {
-    padding: 1.5rem;
+  .feature-header {
+    padding: 1rem;
+  }
+
+  .feature-content {
+    padding: 1rem;
+  }
+
+  .feature-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    padding: 0.75rem;
   }
 }
