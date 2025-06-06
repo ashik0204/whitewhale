@@ -1,141 +1,84 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import './common.css';
 import './AboutSection.css';
 
 const AboutSection = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slideshowRef = useRef(null);
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
-  
-  // Minimum distance to be considered a swipe
-  const minSwipeDistance = 50;
-  
-  const slides = [
-    {
-      id: 0,
-      text: "In today's hyper-competitive B2B landscape, outreach is noisy and saturated. Onboarding journeys are clunky and fragmented. Campaign performance feels like expensive guesswork. The result? Your highest-value enterprise prospects and accounts slip through unnoticed—not because your team lacks effort or expertise, but because traditional tools weren't built for strategic account-based hunting in the age of information overload.",
-      background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)"
+  // Defining all content sections
+  const sections = {
+    default: {
+      title: "About Us White Whaling",
+      content: "Hunt big. Close bigger. Let AI do the chasing."
     },
-    {
-      id: 1,
-      text: "So, we decided to build one. A system that doesn't just manage your pipeline, but transforms it with predictive intelligence and precision targeting, eliminating the guesswork that plagues even the most sophisticated sales organizations.",
-      background: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)"
+    whoWeAre: {
+      title: "Who We Are",
+      content: "We're not just chasing growth—we're chasing greatness. At White Whaling, we believe that smart automation can unlock massive wins for B2B teams. Inspired by the relentless pursuit in Moby Dick, our name reflects our mission: to hunt down inefficiencies and convert them into opportunity.\n\nWe're a team of builders, dreamers, data scientists, and sales renegades who were tired of chasing leads manually. So we built something better: a powerful AI engine that does the chasing—while you focus on closing."
     },
-    {
-      id: 2,
-      text: "White Whaling is a next-generation, AI-powered revenue acceleration platform—designed by some of the brightest minds in growth engineering, product strategy, and computational data science—who've helped scale category-defining startups, Fortune 500 enterprises, and everything in between. Our team has walked the path: from cold-call floors and campaign war rooms to enterprise deal negotiation and cross-functional GTM strategy. We've lived your pain points and know what it takes to surpass ambitious revenue targets quarter after quarter.",
-      background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)"
+    whyWeExist: {
+      title: "Why We Exist",
+      content: "B2B sales hasn't evolved fast enough. Outreach is noisy. Leads go cold. CRMs are bloated. We built White Whaling to flip the script. Our platform turns cold contacts into conversations, and conversations into conversions.\n\nNo more spray and pray. No more tab overload. No more one-size-fits-all cadences. Just hyper-personalized, AI-driven growth at scale."
     },
-    {
-      id: 3, 
-      text: "Together, we've distilled decades of industry-tested playbooks into an intelligent system that leverages proprietary algorithms to help companies qualify high-intent prospects, personalize outreach at scale, streamline customer onboarding, orchestrate multi-channel campaigns, and deliver proactive customer success interventions—all without sacrificing the human touch that defines meaningful business relationships. Our platform's machine learning models continuously improve, identifying buying signals your team might miss and suggesting optimal engagement strategies based on real-world conversion data.",
-      background: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)"
+    whatWeBelieve: {
+      title: "What We Believe",
+      content: "• Humans close. AI chases. We believe reps should build relationships, not burn out on copy/paste.\n\n• Focus is a superpower. That's why we automate the 80% that wastes your time.\n\n• Design matters. Simplicity and clarity win.\n\n• Transparency builds trust. In our product, our pricing, and our partnerships."
     },
-    {
-      id: 4,
-      text: <strong>We're not here to replace your revenue team. We're here to transform them into a data-driven, laser-focused unit that consistently lands and expands high-value enterprise accounts with unprecedented efficiency. In a marketplace where everyone claims to be 'AI-powered', we deliver measurable ROI through genuine intelligence that adapts to your unique sales motion and customer journey.</strong>,
-      background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)"
-    }
-  ];
-
-  const goToPrevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  const goToNextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-  
-  // Touch event handlers
-  const onTouchStart = (e) => {
-    setTouchEnd(null); // Reset touchEnd
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-  
-  const onTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-  
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    if (isLeftSwipe) {
-      goToNextSlide();
-    } else if (isRightSwipe) {
-      goToPrevSlide();
+    meetTheCrew: {
+      title: "Meet The Crew",
+      content: "We're startup-tested, enterprise-proven, and globally distributed. Our founders have led GTM at unicorns, engineered AI at scale, and sold millions in SaaS. The sea might be rough—but we know how to steer the ship.\n\nLet's hunt big. Close bigger.\n\n👉 Ready to see what we're building? Book a demo or join the waitlist."
     }
   };
+
+  // State to track which content to display
+  const [activeSection, setActiveSection] = useState('default');
+
+  // Function to handle panel hover
+  const handlePanelHover = (sectionKey) => {
+    setActiveSection(sectionKey);
+  };
   
-  // Add visual feedback during swipe
-  useEffect(() => {
-    if (!slideshowRef.current || touchStart === null || touchEnd === null) return;
-    
-    const distance = touchStart - touchEnd;
-    // Limit the transform to avoid excessive movement
-    const maxOffset = 50;
-    const offset = Math.abs(distance) > maxOffset ? 
-                   (distance > 0 ? -maxOffset : maxOffset) : 
-                   -distance;
+  // Function to handle mouse leave
+  const handleMouseLeave = () => {
+    setActiveSection('default');
+  };
 
-    const currentTransform = -currentSlide * 100;
-    const newTransform = currentTransform + (offset / slideshowRef.current.offsetWidth * 100);
-    
-    slideshowRef.current.style.transform = `translateX(${newTransform}%)`;
-    
-    return () => {
-      if (slideshowRef.current) {
-        slideshowRef.current.style.transform = `translateX(${currentTransform}%)`;
-      }
-    };
-  }, [touchStart, touchEnd, currentSlide]);
-
-  return (
+  return(
     <section className="section" id="about">
-      <div className="container">
-        <h2>Our Story</h2>
-        
-        <div className="slideshow-container">
+      <div className="about-container" onMouseLeave={handleMouseLeave} >
+        <div className="about-sidebar left" >
           <div 
-            className="slideshow-slides" 
-            ref={slideshowRef}
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
+            className={`about-panel top-left ${activeSection === 'whoWeAre' ? 'active' : ''}`}
+            onMouseEnter={() => handlePanelHover('whoWeAre')}
           >
-            {slides.map((slide) => (
-              <div key={slide.id} className="slide">
-                <div 
-                  className="slide-content"
-                  style={{ background: slide.background }}
-                >
-                  <p>{slide.text}</p>
-                </div>
-              </div>
+            <h3>Who We Are</h3>
+          </div>
+          <div 
+            className={`about-panel bottom-left ${activeSection === 'whyWeExist' ? 'active' : ''}`}
+            onMouseEnter={() => handlePanelHover('whyWeExist')}
+          >
+            <h3>Why We Exist</h3>
+          </div>
+        </div>
+
+        <div className="about-center" >
+          <h2>{sections[activeSection].title}</h2>
+          <div className="about-content">
+            {sections[activeSection].content.split('\n\n').map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
             ))}
           </div>
-          
-          <div className="slideshow-controls">
-            <button className="slide-arrow prev" onClick={goToPrevSlide}>
-              &larr;
-            </button>
-            <div className="slide-indicators">
-              {slides.map((slide, index) => (
-                <span 
-                  key={index} 
-                  className={`indicator ${currentSlide === index ? 'active' : ''}`}
-                  onClick={() => setCurrentSlide(index)}
-                ></span>
-              ))}
-            </div>
-            <button className="slide-arrow next" onClick={goToNextSlide}>
-              &rarr;
-            </button>
+        </div>
+
+        <div className="about-sidebar right">
+          <div 
+            className={`about-panel top-right ${activeSection === 'whatWeBelieve' ? 'active' : ''}`}
+            onMouseEnter={() => handlePanelHover('whatWeBelieve')}
+          >
+            <h3>What We Believe</h3>
+          </div>
+          <div 
+            className={`about-panel bottom-right ${activeSection === 'meetTheCrew' ? 'active' : ''}`}
+            onMouseEnter={() => handlePanelHover('meetTheCrew')}
+          >
+            <h3>Meet The Crew</h3>
           </div>
         </div>
       </div>

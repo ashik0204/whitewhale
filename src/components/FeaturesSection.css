@@ -1,4 +1,5 @@
-#features .container h2 {
+#features .container{
+  h2 {
         border: 4px solid rgb(230, 243, 250);
         border-radius: 10px;
         text-align: center;
@@ -6,7 +7,20 @@
         background: url('../assets/dark_aesthetic_bg.jpeg') no-repeat 20% 20%;
         background-size: cover;
         padding: 1em 1em;
+  }
+  /* p{
+    color:white;
+  } */
 
+
+}
+.description{
+  border:rgb(255,255,255,0.05) solid 2px;
+  border-radius: 10px;
+  text-align: center;
+  color: rgb(240, 244, 245);
+  background-size: cover;
+  padding: 1em 1em;
 }
 .value-prop {
   display: grid;
@@ -16,6 +30,7 @@
 }
 
 .value-card {
+  border:rgb(255,255,255,0.05) solid 2px;
   background-color: rgb(1,31,71);
   padding: 2rem;
   border-radius: 8px;

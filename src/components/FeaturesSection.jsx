@@ -21,6 +21,7 @@ const FeaturesSection = () => {
             <p>Replace guesswork with data-driven outreach that connects with decision makers.</p>
           </div>
         </div>
+        <div className='description'>
         <p>
           We're early. We're building. And we're already working with partners to bring our vision to life.
         </p>
@@ -30,6 +31,7 @@ const FeaturesSection = () => {
         <p>
           <strong>This is White Whaling. Built by operators, trusted by industry, powered by purpose.</strong>
         </p>
+        </div>
       </div>
     </section>
   );
