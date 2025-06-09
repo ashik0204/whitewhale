@@ -90,7 +90,12 @@ const AdminLogin = () => {
         </form>
         
         <div className="admin-login-footer">
-          <a href="/" className="back-link">Back to Website</a>
+          <div className="admin-links">
+            <a href="/" className="back-link">Back to Website</a>
+            <span className="admin-divider">|</span>
+            <a href="/admin/register" className="register-link">Register New User</a>
+          </div>
+          <p className="register-note">Note: Registration requires an invitation token</p>
         </div>
       </div>
     </div>

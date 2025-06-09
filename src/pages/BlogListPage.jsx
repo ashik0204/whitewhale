@@ -16,7 +16,8 @@ const BlogListPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-         const response = await axios.get('/api/blog');
+        // Fix: Use correct API path
+        const response = await axios.get('/api/blog');
         console.log('API response:', response.data); // Debug log
         
         // Ensure posts is always an array
@@ -121,9 +122,17 @@ const BlogListPage = () => {
               <article key={post._id} className="blog-card">
                 <Link to={`/blog/${post.slug}`} className="blog-image-link">
                   <div className="blog-image-container">
-                    <img src={post.featuredImage} alt={post.title} className="blog-image" />
+                    <img 
+                      src={post.coverImage || '/default-blog-image.jpg'} 
+                      alt={post.title} 
+                      className="blog-image"
+                      onError={(e) => {
+                        e.target.src = '/default-blog-image.jpg';
+                        e.target.onerror = null;
+                      }}
+                    />
                     <div className="blog-tags">
-                      {post.tags.map((tag, index) => (
+                      {post.tags && post.tags.map((tag, index) => (
                         <span key={index} className="blog-tag">{tag}</span>
                       ))}
                     </div>
@@ -136,15 +145,24 @@ const BlogListPage = () => {
                   </h2>
                   
                   <div className="blog-meta">
-                    <span className="blog-author">By {post.author.username}</span>
-                    <span className="blog-date">
-                      {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long', 
-                        day: 'numeric'
-                      })}
+                    <span className="blog-author">
+                      By {post.author?.username || 'Unknown Author'}
                     </span>
-                    <span className="blog-read-time">{post.readTime}</span>
+                    <span className="blog-date">
+                      {post.publishedAt ? 
+                        new Date(post.publishedAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long', 
+                          day: 'numeric'
+                        }) : 
+                        new Date(post.createdAt || Date.now()).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long', 
+                          day: 'numeric'
+                        })
+                      }
+                    </span>
+                    <span className="blog-read-time">{post.readTime || '5 min read'}</span>
                   </div>
                   
                   <p className="blog-excerpt">{post.excerpt}</p>

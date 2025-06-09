@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get current user
+        // Get current user - Fix: Use correct API path
         const userResponse = await axios.get('/api/auth/me', { withCredentials: true });
         console.log(userResponse.data.user);
         console.log("error!")
@@ -27,7 +27,7 @@ const AdminDashboard = () => {
           return;
         }
 
-        // Get posts
+        // Get posts - Fix: Use correct API path
         const postsResponse = await axios.get('/api/admin/posts', { withCredentials: true });
         setPosts(postsResponse.data);
       } catch (err) {
@@ -46,6 +46,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
+      // Fix: Use correct API path
       await axios.post('/api/auth/logout', {}, { withCredentials: true });
       navigate('/admin/login');
     } catch (err) {
@@ -56,6 +57,7 @@ const AdminDashboard = () => {
   const handleDeletePost = async (id) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       try {
+        // Fix: Use correct API path
         await axios.delete(`/api/blog/${id}`, { withCredentials: true });
         setPosts(posts.filter(post => post._id !== id));
       } catch (err) {

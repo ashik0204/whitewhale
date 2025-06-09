@@ -1,3 +1,7 @@
+#features {
+  background-color: #e6f7ff; /* Added light blue background */
+}
+
 #features .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -20,10 +24,11 @@
 } */
 
 .description {
-  border: rgba(255, 255, 255, 0.05) solid 2px;
+  border: rgba(0, 119, 204, 0.15) solid 2px; /* Changed border color to bluish */
   border-radius: 10px;
   text-align: center;
-  color: rgb(240, 244, 245);
+  color: #333; /* Dark text for readability */
+  background-color: #f0f9ff; /* Very light blue background */
   background-size: cover;
   padding: 1em 1em;
   margin-bottom: 3rem;
@@ -87,22 +92,25 @@
   background-color: #38bdf8;
   transform: scale(1.2);
 }
-#feature-search{
+#feature-search {
   margin-bottom: 2rem;
-  border: rgba(255, 255, 255, 0.05) solid 2px;
+  border: rgba(15, 76, 129, 0.1) solid 2px; /* Changed border color */
   border-radius: 10px;
   text-align: center;
-  color: rgb(240, 244, 245);
+  color: #333; /* Changed to dark text */
+  background-color: #f0f9ff; /* Very light blue */
+  border-color: #a3d8ff; /* Medium-light blue border */
   background-size: cover;
   padding: 0.1em;
   font-size: 1.5em;
 }
+
 /* Feature cards */
 .feature-card {
-  border: rgba(255, 255, 255, 0.05) solid 2px;
-  background-color: rgb(1, 31, 71);
+  border: rgba(0, 119, 204, 0.2) solid 2px; /* Blue-tinted border */
+  background-color: #d1ebff; /* Light blue background for cards */
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -128,7 +136,7 @@
 }
 
 .feature-header h3 {
-  color: #38bdf8;
+  color: #0077cc; /* Changed to a rich blue color */
   margin: 0;
   font-size: 1.25rem;
   text-align: center;
@@ -140,7 +148,7 @@
 }
 
 .feature-overview {
-  color: #fff;
+  color: #333; /* Changed from white to dark text */
   font-size: 0.95rem;
   line-height: 1.5;
   margin: 0;
@@ -152,9 +160,9 @@
 
 /* Feature details container - where expanded content is shown */
 .feature-details-container {
-  border: 2px solid #38bdf8;
+  border: 2px solid #a3d8ff; /* Medium-light blue border */
   border-radius: 12px;
-  background-color: rgba(1, 31, 71, 0.95);
+  background-color: #f0f9ff; /* Very light blue background */
   margin: 1rem 0 3rem;
   padding: 0;
   animation: fadeIn 0.5s ease;
@@ -163,7 +171,7 @@
 }
 
 .feature-details-header {
-  background-color: rgba(56, 189, 248, 0.1);
+  background-color: #d1ebff; /* Light blue header */
   padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -172,7 +180,7 @@
 }
 
 .feature-details-header h3 {
-  color: #38bdf8;
+  color: #0F4C81; /* Changed from light to darker blue */
   margin: 0;
   font-size: 1.5rem;
 }
@@ -180,7 +188,7 @@
 .close-button {
   background: none;
   border: none;
-  color: #fff;
+  color: #333; /* Changed from white to dark */
   font-size: 1.8rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -201,7 +209,7 @@
 .benefits-section h4,
 .use-case-section h4,
 .testimonial-section h4 {
-  color: #38bdf8;
+  color: #0F4C81; /* Changed from light to darker blue */
   margin-top: 0;
   margin-bottom: 1rem;
   font-size: 1rem;
@@ -213,18 +221,18 @@
 }
 
 .benefits-section ul li {
-  color: #fff;
+  color: #333; /* Changed from white to dark */
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
 }
 
 .use-case-section p {
-  color: #fff;
+  color: #333; /* Changed from white to dark */
   font-size: 0.95rem;
 }
 
 .testimonial-section blockquote {
-  color: #fff;
+  color: #333; /* Changed from white to dark */
   font-style: italic;
   margin: 0;
   padding-left: 1rem;
@@ -233,16 +241,18 @@
 
 .testimonial-section blockquote footer {
   margin-top: 0.5rem;
-  color: #38bdf8;
+  color: #0F4C81; /* Changed color */
   font-size: 0.85rem;
   font-style: normal;
 }
 
 .cta-container {
-  border: rgba(255, 255, 255, 0.05) solid 2px;
+  border: rgba(0, 119, 204, 0.2) solid 2px; /* Blue-tinted border */
+  background-color: #f0f9ff; /* Very light blue */
   border-radius: 10px;
   text-align: center;
-  color: rgb(240, 244, 245);
+  color: #333; /* Changed from white to dark */
+  background-color: #f5f7fa; /* Added light background */
   background-size: cover;
   padding: 1.5rem;
   margin-top: 2rem;
@@ -250,7 +260,7 @@
 
 .cta-container p {
   font-size: 1.2rem;
-  color: #fff;
+  color: #333; /* Changed from white to dark */
   margin: 0;
 }
 

@@ -6,6 +6,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import blogRoutes from './routes/blog.js';
 import adminRoutes from './routes/admin.js';
+import uploadRoutes from './routes/upload.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -42,8 +43,14 @@ const PORT = process.env.PORT || 3001; // Use 3001 as default since 3000 seems t
 
 const app = express();
 
+// Add production environment setup
+const CLIENT_BUILD_PATH = path.join(__dirname, '..', 'dist');
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 app.use(cors({
-  origin: ['http://localhost:3001', 'http://localhost:5173'],
+  origin: isDevelopment 
+    ? ['http://localhost:3001', 'http://localhost:5173'] 
+    : process.env.CLIENT_URL || '*',
   credentials: true
 }));
 app.use(express.json());
@@ -52,6 +59,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Connect to MongoDB with proper error handling
 console.log(`Connecting to MongoDB: ${MONGODB_URI.substring(0, MONGODB_URI.indexOf('@') + 1)}***`);
@@ -66,10 +76,27 @@ mongoose.connect(MONGODB_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
-app.get('/', (req, res) => {
-  res.send('API is running...');
-});
+// Serve static files from the build directory in production
+if (!isDevelopment) {
+  // Serve static files from React app build
+  app.use(express.static(CLIENT_BUILD_PATH));
+
+  // Handle React routing, return all requests to React app
+  app.get('*', (req, res) => {
+    if (req.path.startsWith('/api')) {
+      res.status(404).json({ message: 'API endpoint not found' });
+    } else {
+      res.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
+    }
+  });
+} else {
+  // Development API check route
+  app.get('/', (req, res) => {
+    res.send('API is running...');
+  });
+}
 
 // Try multiple ports if the default is in use
 function startServer(port) {

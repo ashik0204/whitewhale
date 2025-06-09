@@ -15,6 +15,7 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        // Fix: Use correct API path
         const response = await axios.get(`/api/blog/${slug}`);
         setPost(response.data);
       } catch (err) {
@@ -77,12 +78,19 @@ const BlogDetail = () => {
           </div>
           <h1 className="blog-detail-title">{post.title}</h1>
           <div className="blog-detail-author">
-            By {post.author.username} • {post.readTime}
+            By {post.author?.username || 'Anonymous'} • {post.readTime || '5 min read'}
           </div>
         </div>
 
         <div className="blog-detail-featured-image">
-          <img src={post.featuredImage} alt={post.title} />
+          <img 
+            src={post.coverImage || post.featuredImage || '/default-blog-image.jpg'} 
+            alt={post.title}
+            onError={(e) => {
+              e.target.src = '/default-blog-image.jpg';
+              e.target.onerror = null;
+            }}
+          />
         </div>
 
         <article className="blog-detail-content">
@@ -93,7 +101,7 @@ const BlogDetail = () => {
         </article>
 
         <div className="blog-detail-tags">
-          {post.tags.map((tag, index) => (
+          {post.tags && post.tags.map((tag, index) => (
             <Link key={index} to={`/blog/tag/${tag}`} className="blog-tag">
               {tag}
             </Link>

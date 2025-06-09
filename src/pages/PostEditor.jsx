@@ -12,7 +12,7 @@ const PostEditor = () => {
     title: '',
     excerpt: '',
     content: '',
-    featuredImage: '',
+    coverImage: '',
     tags: '',
     readTime: '5 min read',
     status: 'draft'
@@ -22,6 +22,7 @@ const PostEditor = () => {
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [imageFile, setImageFile] = useState(null);
 
   // Fetch post data if in edit mode
   useEffect(() => {
@@ -29,18 +30,19 @@ const PostEditor = () => {
       const fetchPost = async () => {
         setIsLoading(true);
         try {
+          // Fix: Use correct API path
           const response = await axios.get(`/api/blog/${id}`, { withCredentials: true });
           const post = response.data;
           setFormData({
             title: post.title,
             excerpt: post.excerpt,
             content: post.content,
-            featuredImage: post.featuredImage,
+            coverImage: post.coverImage,
             tags: post.tags.join(', '),
             readTime: post.readTime,
             status: post.status
           });
-          setPreviewUrl(post.featuredImage);
+          setPreviewUrl(post.coverImage);
         } catch (err) {
           setError('Failed to fetch post data');
           console.error(err);
@@ -64,15 +66,13 @@ const PostEditor = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Here we would typically upload to a service like AWS S3, Cloudinary, etc.
-    // For now, we'll create a local URL to simulate image preview
+    // Store the actual file for later upload
+    setImageFile(file);
+
+    // Create a preview URL for the UI
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreviewUrl(reader.result);
-      setFormData(prev => ({
-        ...prev,
-        featuredImage: reader.result // In production, this would be the URL from your image hosting
-      }));
     };
     reader.readAsDataURL(file);
   };
@@ -89,14 +89,36 @@ const PostEditor = () => {
         .map(tag => tag.trim())
         .filter(tag => tag);
 
+      let imageUrl = formData.coverImage;
+      
+      // If we have a new image file, upload it first
+      if (imageFile) {
+        const uploadFormData = new FormData();
+        uploadFormData.append('image', imageFile);
+        
+        // Fix: Use correct API path
+        const uploadResponse = await axios.post('/api/upload', uploadFormData, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        
+        // Get the URL of the uploaded image from the server response
+        imageUrl = uploadResponse.data.imageUrl;
+      }
+
       const postData = {
         ...formData,
+        coverImage: imageUrl,
         tags: tagsArray
       };
 
       if (isEditMode) {
+        // Fix: Use correct API path
         await axios.put(`/api/blog/${id}`, postData, { withCredentials: true });
       } else {
+        // Fix: Use correct API path
         await axios.post('/api/blog', postData, { withCredentials: true });
       }
       
@@ -182,10 +204,10 @@ const PostEditor = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="featuredImage">Featured Image</label>
+          <label htmlFor="coverImage">Featured Image</label>
           <input
             type="file"
-            id="featuredImage"
+            id="coverImage"
             accept="image/*"
             onChange={handleImageChange}
           />

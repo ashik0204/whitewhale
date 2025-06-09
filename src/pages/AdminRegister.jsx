@@ -75,60 +75,66 @@ const AdminRegister = () => {
 
     return(
         <div className="admin-register-container">
-            <div className="admin-register-header">
-                <h1>Admin Register</h1>
+            <div className="admin-register-form">
+                <div className="admin-register-header">
+                    <h1>Admin Register</h1>
+                </div>
+                
+                {error && <div className="error-message">{error}</div>}
+                
+                <form onSubmit={handlesubmit}>
+                    <div className="username-content">
+                        <input 
+                            type="text" 
+                            name="username"
+                            value={credentials.username}
+                            onChange={handleChange}
+                            placeholder="Username" 
+                            required
+                        />
+                    </div>
+                    <div className="email-content">
+                        <input 
+                            type="email" 
+                            name="email"
+                            value={credentials.email}
+                            onChange={handleChange}
+                            placeholder="Email" 
+                            required
+                        />
+                    </div>
+                    <div className="password-content">
+                        <input 
+                            type="password" 
+                            name="password"
+                            value={credentials.password}
+                            onChange={handleChange}
+                            placeholder="Password" 
+                            required
+                        />
+                    </div>
+                    <div className="role-select">
+                        <label>Role:</label>
+                        <select 
+                            name="role" 
+                            value={credentials.role}
+                            onChange={handleChange}
+                        >
+                            <option value="admin">Admin</option>
+                            <option value="editor">Editor</option>
+                        </select>
+                    </div>
+                    <div className="register-button">
+                        <button type="submit" disabled={isLoading || !inviteToken}>
+                            {isLoading ? 'Registering...' : 'Register'}
+                        </button>
+                    </div>
+                </form>
+                
+                <div className="admin-register-footer">
+                    <a href="/admin/login" className="login-link">Already have an account? Login</a>
+                </div>
             </div>
-            
-            {error && <div className="error-message">{error}</div>}
-            
-            <form className="admin-register-form" onSubmit={handlesubmit}>
-                <div className="username-content">
-                    <input 
-                        type="text" 
-                        name="username"
-                        value={credentials.username}
-                        onChange={handleChange}
-                        placeholder="Username" 
-                        required
-                    />
-                </div>
-                <div className="email-content">
-                    <input 
-                        type="email" 
-                        name="email"
-                        value={credentials.email}
-                        onChange={handleChange}
-                        placeholder="Email" 
-                        required
-                    />
-                </div>
-                <div className="password-content">
-                    <input 
-                        type="password" 
-                        name="password"
-                        value={credentials.password}
-                        onChange={handleChange}
-                        placeholder="Password" 
-                        required
-                    />
-                </div>
-                <div className="role-select">
-                    <label>Role:</label>
-                    <select 
-                        name="role" 
-                        value={credentials.role}
-                        onChange={handleChange}
-                    >
-                        <option value="admin">Admin</option>
-                        <option value="editor">Editor</option>
-                    </select>
-                </div>
-                <div className="register-button">
-                    <button type="submit" disabled={isLoading || !inviteToken}>
-                        {isLoading ? 'Registering...' : 'Register'}
-                    </button>
-                </div>
-            </form>
         </div>
     );
 };

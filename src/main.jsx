@@ -1,19 +1,15 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.jsx';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 import axios from 'axios';
+import { API_BASE_URL } from './config/api.js';
+import './index.css';
 
-// Configure axios to include credentials in requests
-axios.defaults.withCredentials = true;
+// Configure axios defaults
+axios.defaults.baseURL = API_BASE_URL;
 
-// Set base URL for API requests in development
-if (import.meta.env.DEV) {
-  axios.defaults.baseURL = 'http://localhost:3001';
-}
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
+  </React.StrictMode>,
 );

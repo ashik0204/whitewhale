@@ -2,8 +2,8 @@
   min-height: 80vh;
   display: flex;
   align-items: center;
-  background-color: #0a192f;
-  color: #fff;
+  background-color: #e6f7ff; /* Changed to light blue */
+  color: #ffffff; /* Changed to white text for contrast */
   padding: 4rem 0;
 }
 
@@ -24,8 +24,8 @@
 }
 
 .about-panel {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background-color: #3b7aaa; /* Light blue panels */
+  border: 2px solid #0b87df; /* Blue-tinted borders */
   border-radius: 8px;
   padding: 1.5rem;
   cursor: pointer;
@@ -70,16 +70,14 @@
   margin: 0;
   transition: transform 0.3s ease;
   padding: 8px 0;
-}
-
-.about-panel:hover h3, .about-panel.active h3 {
-  transform: scale(1.05);
+  color: #ffffff; /* Changed to white text */
 }
 
 .about-center {
   background: url('../assets/dark_aesthetic_bg.jpeg') no-repeat center center;
   background-size: cover;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background-color: #f0f9ff; /* Add light blue background under the image */
+  border: 2px solid #a3d8ff; /* Blue-tinted border */
   border-radius: 12px;
   padding: 2rem;
   display: flex;
@@ -93,13 +91,16 @@
   font-size: 2rem;
   margin-top: 0;
   margin-bottom: 1.5rem;
-  color: #38bdf8;
+  color: #ffffff; /* Changed to white for better visibility */
   text-align: center;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Added text shadow for better readability */
 }
 .about-center p {
   line-height: 1.7;
   margin-bottom: 1.5rem;
   font-size: 1.05rem;
+  color: #4e1e1e; /* Changed to white */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4); /* Added text shadow for better readability */
 }
 
 .about-content {
@@ -112,7 +113,9 @@
 .about-content p {
   line-height: 1.7;
   margin-bottom: 1.2rem;
-  font-size: 1.5rem; /* Increased from 1.05rem to 1.25rem */
+  font-size: 1.5rem;
+  color: #ffffff; /* Changed from dark to white for better visibility */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Added text shadow for better readability */
 }
 
 /* Custom scrollbar for the content area */

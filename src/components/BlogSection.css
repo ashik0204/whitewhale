@@ -1,5 +1,6 @@
 #blog {
   padding: 5rem 0;
+  background-color: #e6f7ff; /* Added light blue background */
 }
 
 /* Fix the nested CSS and make the header standalone */
@@ -24,7 +25,7 @@
   border-radius: 8px;
   border: 2px solid rgb(1,31,71);
   padding: 1em;
-  background-color: white;
+  background-color: #f0f9ff; /* Lighter blue for contrast */
 }
 
 .section-intro {
@@ -35,12 +36,14 @@
   color: #6b7280;
 }
 
-#blog-search{
+#blog-search {
   margin-bottom: 2rem;
-  border: rgba(255, 255, 255, 0.05) solid 2px;
+  border: rgba(15, 76, 129, 0.1) solid 2px; /* Changed border color */
   border-radius: 10px;
   text-align: center;
-  color: rgb(240, 244, 245);
+  color: #333; /* Changed from light to dark text */
+  background-color: #f0f9ff; /* Light blue background */
+  border-color: #a3d8ff; /* Slightly darker blue border */
   background-size: cover;
   padding: 0.1em;
   font-size: 1.5em;
@@ -145,11 +148,12 @@
 }
 
 .blog-cta {
-  background: rgb(1,31,71);
+  background: #d1ebff; /* Changed to a medium-light blue */
   border-radius: 12px;
   padding: 3rem;
   text-align: center;
-  color: white;
+  color: #333; /* Changed from white to dark */
+  border: 1px solid #e0e0e0; /* Added border */
 }
 
 .blog-cta h3 {
@@ -191,6 +195,69 @@
   font-size: 0.875rem;
   opacity: 0.8;
   margin: 0;
+}
+
+/* Add these styles to your existing BlogSection.css file */
+
+.blog-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 119, 204, 0.2); /* Lighter blue color */
+  border-radius: 50%;
+  border-top-color: #0077cc; /* Darker blue for spinner accent */
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.blog-error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.no-posts {
+  text-align: center;
+  padding: 40px 0;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.view-all-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.view-all-link {
+  display: inline-block;
+  color: #0F4C81;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 8px 16px;
+  border: 2px solid #0F4C81;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.view-all-link:hover {
+  background-color: #0F4C81;
+  color: white;
 }
 
 @media (max-width: 768px) {

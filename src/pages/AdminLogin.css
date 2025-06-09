@@ -94,12 +94,30 @@
   text-align: center;
 }
 
-.back-link {
+.admin-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.back-link, .register-link {
   color: #0F4C81;
   text-decoration: none;
   font-size: 0.9rem;
 }
 
-.back-link:hover {
+.back-link:hover, .register-link:hover {
   text-decoration: underline;
+}
+
+.admin-divider {
+  margin: 0 10px;
+  color: #999;
+}
+
+.register-note {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 5px;
 }
