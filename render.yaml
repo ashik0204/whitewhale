@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: white-whaling
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: white-whaling-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+
+databases:
+  - name: white-whaling-db
+    databaseName: whitewhaling
+    plan: free
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
