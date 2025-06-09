@@ -5,12 +5,11 @@
   "engines": {
     "node": ">=16.0.0"
   },
+  "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
-    "build": "npm run build:client && npm run install:server",
-    "build:client": "cd src && npm install && npm run build",
-    "install:server": "cd server && npm install",
-    "dev": "concurrently \"cd server && npm run dev\" \"cd src && npm run dev\""
+    "build": "npm install && cd client && npm install && npm run build",
+    "dev": "concurrently \"nodemon server/index.js\" \"cd client && npm run dev\""
   },
   "dependencies": {
     "concurrently": "^8.0.1"
