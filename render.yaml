@@ -2,7 +2,7 @@ services:
   - type: web
     name: white-whaling
     env: node
-    buildCommand: npm install && npm run install:server
+    buildCommand: chmod +x ./build.sh && ./build.sh
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -13,3 +13,5 @@ services:
         generateValue: true
       - key: PORT
         value: 10000
+      - key: CLIENT_URL
+        sync: false
