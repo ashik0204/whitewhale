@@ -9,8 +9,12 @@
   },
   "scripts": {
     "start": "node server/index.js",
-    "build": "npm install",
-    "dev": "concurrently \"nodemon server/index.js\" \"npm run dev:client\"",
+    "build": "chmod +x ./build.sh && ./build.sh",
+    "build:windows": "npm run build:client && npm run install:server",
+    "build:client": "cd src && npm install && npm run build && cd .. && xcopy .\\src\\dist .\\dist\\ /E /I /Y",
+    "install:server": "cd server && npm install",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && nodemon index.js",
     "dev:client": "cd src && npm run dev"
   },
   "dependencies": {

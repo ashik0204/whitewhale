@@ -10,6 +10,7 @@ import uploadRoutes from './routes/upload.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { createInitialAdmin } from './utils/setupAdmin.js';
 
 // Get directory path for current module (ESM equivalent of __dirname)
 const __filename = fileURLToPath(import.meta.url);
@@ -39,12 +40,12 @@ if (!envLoaded) {
 // Define hardcoded fallback values for critical variables
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ashikstenny:QHg3Ye8OpQ0ZH0F0@cluster0.anvyfjd.mongodb.net/';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'your_default_secret';
-const PORT = process.env.PORT || 3001; // Use 3001 as default since 3000 seems to be in use
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-// Add production environment setup
-const CLIENT_BUILD_PATH = path.join(__dirname, '..', 'dist');
+// Define paths for frontend build
+const FRONTEND_BUILD_PATH = path.join(__dirname, '..', 'dist');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 app.use(cors({
@@ -60,57 +61,56 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Serve static files from the public directory (for uploads)
+app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')));
 
-// Connect to MongoDB with proper error handling
-console.log(`Connecting to MongoDB: ${MONGODB_URI.substring(0, MONGODB_URI.indexOf('@') + 1)}***`);
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => {
-    console.error("MongoDB connection error:", err);
-    process.exit(1); // Exit with failure if MongoDB connection fails
-  });
-
-// Use routes
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 
-// Serve static files from the build directory in production
-if (!isDevelopment) {
-  // Serve static files from React app build
-  app.use(express.static(CLIENT_BUILD_PATH));
-
-  // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
-    if (req.path.startsWith('/api')) {
-      res.status(404).json({ message: 'API endpoint not found' });
+// Connect to MongoDB
+console.log(`Connecting to MongoDB: ${MONGODB_URI.substring(0, MONGODB_URI.indexOf('@') + 1)}***`);
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    // Create initial admin user if needed
+    return createInitialAdmin();
+  })
+  .then(() => {
+    // Serve static files from the frontend build
+    if (fs.existsSync(FRONTEND_BUILD_PATH)) {
+      console.log(`Serving frontend from: ${FRONTEND_BUILD_PATH}`);
+      app.use(express.static(FRONTEND_BUILD_PATH));
+      
+      // Handle SPA routing - all non-API routes should serve the index.html
+      app.get('*', (req, res, next) => {
+        if (req.url.startsWith('/api/')) {
+          // Skip API routes
+          return next();
+        }
+        res.sendFile(path.join(FRONTEND_BUILD_PATH, 'index.html'));
+      });
     } else {
-      res.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
+      console.warn(`Frontend build not found at ${FRONTEND_BUILD_PATH}`);
+      
+      // Development fallback
+      if (isDevelopment) {
+        app.get('/', (req, res) => {
+          res.send('API is running. Frontend build not found.');
+        });
+      }
     }
+    
+    // Start the server
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`- API available at http://localhost:${PORT}/api`);
+      console.log(`- Frontend ${fs.existsSync(FRONTEND_BUILD_PATH) ? 'available' : 'NOT available'} at http://localhost:${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
   });
-} else {
-  // Development API check route
-  app.get('/', (req, res) => {
-    res.send('API is running...');
-  });
-}
-
-// Try multiple ports if the default is in use
-function startServer(port) {
-  app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-  }).on('error', (e) => {
-    if (e.code === 'EADDRINUSE') {
-      console.log(`Port ${port} is already in use. Trying port ${port + 1}`);
-      startServer(port + 1);
-    } else {
-      console.error("Server error:", e);
-      process.exit(1);
-    }
-  });
-}
-
-startServer(PORT);
