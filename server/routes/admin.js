@@ -2,6 +2,8 @@ import express from 'express';
 import BlogPost from '../models/BlogPost.js';
 import User from '../models/User.js';
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
+import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -61,6 +63,31 @@ router.delete('/users/:id', isAuthenticated, isAdmin, async (req, res) => {
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Debug route to list uploaded files
+router.get('/uploads', isAuthenticated, isAdmin, (req, res) => {
+  try {
+    const uploadsDir = path.join(__dirname, '..', '..', 'public', 'uploads');
+    
+    if (!fs.existsSync(uploadsDir)) {
+      return res.json({ 
+        message: 'Uploads directory does not exist',
+        path: uploadsDir
+      });
+    }
+    
+    const files = fs.readdirSync(uploadsDir);
+    
+    res.json({
+      message: 'Files in uploads directory',
+      path: uploadsDir,
+      files: files,
+      count: files.length
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error listing uploads', error: error.message });
   }
 });
 

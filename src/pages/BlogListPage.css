@@ -96,6 +96,7 @@
   transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
+  color: #333; /* Ensure text color is dark on light background */
 }
 
 .blog-card:hover {
@@ -117,6 +118,7 @@
   height: 0;
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
   overflow: hidden;
+  background-color: #e0e0e0; /* Light gray fallback */
   border-radius: 8px;
 }
 
@@ -191,6 +193,52 @@
   margin-bottom: 20px;
   flex-grow: 1;
 }
+
+/* Ensure text is readable in both light and dark modes */
+.blog-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  color: #333; /* Ensure text color is dark on light background */
+}
+
+.blog-title a {
+  color: #0a192f;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.blog-excerpt {
+  color: #4b5563;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+/* Fix dark mode issues with specific selectors */
+.blog-list-container {
+  background-color: #f5f8fa; /* Light background for the container */
+}
+
+.blog-newsletter {
+  background-color: #d1ebff; 
+  color: #333; /* Ensure text is dark on light background */
+}
+
+/* Additional fixes for image placeholders */
+.blog-image-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+  background-color: #e0e0e0; /* Light gray fallback */
+}
+
+
 
 .read-more {
   color: #0F4C81;

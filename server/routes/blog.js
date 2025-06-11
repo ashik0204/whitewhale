@@ -37,6 +37,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get a single post by ID (needed for edit functionality)
+router.get('/post/:id', async (req, res) => {
+  try {
+    console.log(`Fetching post by ID: ${req.params.id}`);
+    
+    // Check if the ID is a valid MongoDB ObjectId
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(404).json({ message: 'Invalid post ID format' });
+    }
+    
+    const post = await BlogPost.findById(req.params.id)
+      .populate('author', 'username');
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    res.json(post);
+  } catch (error) {
+    console.error('Error fetching post by ID:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // Get a single post by slug
 router.get('/:slug', async (req, res) => {
   try {
@@ -118,14 +142,18 @@ router.put('/:id', isAuthenticated, isAdmin, async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
     
+    // This line updates the coverImage field in the database
+    post.coverImage = coverImage || post.coverImage;
+    
+    // Other fields being updated...
     post.title = title || post.title;
     post.content = content || post.content;
     post.excerpt = excerpt || post.excerpt;
     post.tags = tags || post.tags;
-    post.coverImage = coverImage || post.coverImage;
     post.published = published !== undefined ? published : post.published;
     post.featured = featured !== undefined ? featured : post.featured;
     
+    // Save the updated post to the database
     await post.save();
     res.json({ message: 'Post updated successfully', post });
   } catch (error) {

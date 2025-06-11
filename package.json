@@ -8,11 +8,17 @@
   "scripts": {
     "start": "node server/index.js",
     "build": "npm run build:client && npm run install:server",
-    "build:client": "cd src && npm install && npm run build",
+    "build:client": "cd src && npm run build",
     "install:server": "cd server && npm install",
-    "dev": "concurrently \"cd server && npm run dev\" \"cd src && npm run dev\""
+    "setup": "npm install && cd server && npm install && cd ../src && npm install",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && nodemon index.js",
+    "dev:client": "cd src && npm run dev"
   },
   "dependencies": {
     "concurrently": "^8.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }

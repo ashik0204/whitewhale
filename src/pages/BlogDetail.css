@@ -267,6 +267,15 @@
   text-decoration: none;
 }
 
+.image-debug-info {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 0.5rem;
+  font-family: monospace;
+  word-break: break-all;
+  text-align: center;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .blog-detail-title {

@@ -60,8 +60,29 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Create the public directory and uploads directory
+const publicDir = path.join(__dirname, '..', 'public');
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
+  console.log(`Created public directory at: ${publicDir}`);
+}
+
+const uploadsDir = path.join(publicDir, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log(`Created uploads directory at: ${uploadsDir}`);
+}
+
+// Serve static files - IMPORTANT: Order matters! More specific paths first
+app.use('/uploads', express.static(path.join(publicDir, 'uploads'), {
+  setHeaders: (res, filePath) => {
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year in seconds
+    console.log(`Serving image: ${filePath}`);
+  }
+}));
+
+// Then serve the general public directory
+app.use(express.static(publicDir));
 
 // Connect to MongoDB with proper error handling
 console.log(`Connecting to MongoDB: ${MONGODB_URI.substring(0, MONGODB_URI.indexOf('@') + 1)}***`);
@@ -71,6 +92,12 @@ mongoose.connect(MONGODB_URI)
     console.error("MongoDB connection error:", err);
     process.exit(1); // Exit with failure if MongoDB connection fails
   });
+
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -97,6 +124,19 @@ if (!isDevelopment) {
     res.send('API is running...');
   });
 }
+
+// Debug route to check directory structure
+app.get('/api/debug/dirs', (req, res) => {
+  const dirs = {
+    __dirname,
+    publicDir,
+    uploadsDir,
+    publicExists: fs.existsSync(publicDir),
+    uploadsExists: fs.existsSync(uploadsDir),
+    files: fs.existsSync(uploadsDir) ? fs.readdirSync(uploadsDir) : []
+  };
+  res.json(dirs);
+});
 
 // Try multiple ports if the default is in use
 function startServer(port) {

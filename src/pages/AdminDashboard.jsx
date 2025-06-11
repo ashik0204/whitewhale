@@ -139,16 +139,17 @@ const AdminDashboard = () => {
                 posts.map(post => (
                   <div key={post._id} className="post-item">
                     <div className="post-title">{post.title}</div>
-                    <div className={`post-status ${post.status}`}>
-                      {post.status}
+                    <div className={`post-status ${post.status || 'draft'}`}>
+                      {post.status || 'draft'}
                     </div>
                     <div className="post-date">
-                      {new Date(post.updatedAt).toLocaleDateString()}
+                      {new Date(post.updatedAt || post.createdAt || Date.now()).toLocaleDateString()}
                     </div>
                     <div className="post-actions">
                       <Link 
                         to={`/admin/posts/edit/${post._id}`} 
                         className="edit-button"
+                        title={`Edit post ID: ${post._id}`}
                       >
                         Edit
                       </Link>

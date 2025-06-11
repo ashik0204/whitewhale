@@ -34,6 +34,36 @@ const BlogSection = () => {
     post.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Let's create a simpler image URL helper directly in this component
+  const getCorrectImagePath = (imagePath) => {
+    if (!imagePath) return null;
+    
+    // If it's already a full URL, use it
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // For paths starting with /uploads/
+    if (imagePath.startsWith('/uploads/')) {
+      // For localhost development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return `http://localhost:3001${imagePath}`;
+      }
+      // For production
+      return `${window.location.origin}${imagePath}`;
+    }
+    
+    // If it's just a filename
+    if (!imagePath.includes('/')) {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return `http://localhost:3001/uploads/${imagePath}`;
+      }
+      return `${window.location.origin}/uploads/${imagePath}`;
+    }
+    
+    return imagePath;
+  };
+
   return (
     <section className="section" id="blog">
       <div className="container">
@@ -62,11 +92,12 @@ const BlogSection = () => {
                 <div key={post._id} className="blog-card">
                   <div className="blog-image-container">
                     <img 
-                      src={post.coverImage || '/default-blog-image.jpg'} 
+                      src={getCorrectImagePath(post.coverImage)}
                       alt={post.title} 
                       className="blog-image"
                       onError={(e) => {
-                        e.target.src = '/default-blog-image.jpg';
+                        console.error("Failed to load image:", post.coverImage);
+                        e.target.src = '../assets/white_whaling_logo.jpeg';
                         e.target.onerror = null;
                       }}
                     />

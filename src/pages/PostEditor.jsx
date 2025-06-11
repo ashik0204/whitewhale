@@ -24,28 +24,70 @@ const PostEditor = () => {
   const [previewUrl, setPreviewUrl] = useState('');
   const [imageFile, setImageFile] = useState(null);
 
+  // Helper function to get the correct image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    
+    // If it's already a full URL, use it
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // For paths starting with /uploads/
+    if (imagePath.startsWith('/uploads/')) {
+      // For localhost development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return `http://localhost:3001${imagePath}`;
+      }
+      // For production
+      return `${window.location.origin}${imagePath}`;
+    }
+    
+    // If it's just a filename
+    if (!imagePath.includes('/')) {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return `http://localhost:3001/uploads/${imagePath}`;
+      }
+      return `${window.location.origin}/uploads/${imagePath}`;
+    }
+    
+    return imagePath;
+  };
+
   // Fetch post data if in edit mode
   useEffect(() => {
     if (isEditMode) {
       const fetchPost = async () => {
         setIsLoading(true);
         try {
-          // Fix: Use correct API path
-          const response = await axios.get(`/api/blog/${id}`, { withCredentials: true });
+          console.log(`Fetching post with ID: ${id}`);
+          const response = await axios.get(`/api/blog/post/${id}`, { 
+            withCredentials: true,
+            timeout: 10000
+          });
+          
+          console.log('Post data received:', response.data);
+          
           const post = response.data;
           setFormData({
-            title: post.title,
-            excerpt: post.excerpt,
-            content: post.content,
-            coverImage: post.coverImage,
-            tags: post.tags.join(', '),
-            readTime: post.readTime,
-            status: post.status
+            title: post.title || '',
+            excerpt: post.excerpt || '',
+            content: post.content || '',
+            coverImage: post.coverImage || '',
+            tags: Array.isArray(post.tags) ? post.tags.join(', ') : '',
+            readTime: post.readTime || '5 min read',
+            status: post.status || 'draft'
           });
-          setPreviewUrl(post.coverImage);
+          
+          // Handle preview URL differently based on image path format
+          if (post.coverImage) {
+            console.log('Original cover image path:', post.coverImage);
+            setPreviewUrl(getImageUrl(post.coverImage));
+            console.log('Preview URL set to:', getImageUrl(post.coverImage));
+          }
         } catch (err) {
-          setError('Failed to fetch post data');
-          console.error(err);
+          console.error('Error fetching post:', err);
+          setError(`Failed to fetch post data: ${err.message}`);
         } finally {
           setIsLoading(false);
         }
@@ -77,6 +119,32 @@ const PostEditor = () => {
     reader.readAsDataURL(file);
   };
 
+  // Helper function to display cleaner image paths
+  const formatImagePath = (path) => {
+    if (!path) return '';
+    
+    // For data URLs (base64), show a placeholder text
+    if (path.startsWith('data:')) {
+      return 'New image selected (unsaved)';
+    }
+    
+    // For URLs, extract just the filename
+    try {
+      const url = new URL(path);
+      const pathParts = url.pathname.split('/');
+      return pathParts[pathParts.length - 1]; // Just show the filename
+    } catch (e) {
+      // For relative paths
+      if (path.startsWith('/uploads/')) {
+        const pathParts = path.split('/');
+        return pathParts[pathParts.length - 1]; // Just show the filename
+      }
+    }
+    
+    return path;
+  };
+
+  // Ensure uploads are processed correctly and image paths are stored in the right format
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -96,36 +164,60 @@ const PostEditor = () => {
         const uploadFormData = new FormData();
         uploadFormData.append('image', imageFile);
         
-        // Fix: Use correct API path
-        const uploadResponse = await axios.post('/api/upload', uploadFormData, {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        console.log('Uploading image file:', imageFile.name, imageFile.size);
         
-        // Get the URL of the uploaded image from the server response
-        imageUrl = uploadResponse.data.imageUrl;
+        try {
+          const uploadResponse = await axios.post('/api/upload', uploadFormData, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          
+          console.log('Upload response:', uploadResponse.data);
+          
+          // Make sure we use ONLY the relative path for storage in the database
+          // This should be in the format '/uploads/filename.jpg'
+          imageUrl = uploadResponse.data.imageUrl;
+          
+          // Ensure the path starts with "/uploads/"
+          if (imageUrl && !imageUrl.startsWith('/uploads/')) {
+            if (imageUrl.includes('/uploads/')) {
+              imageUrl = '/uploads/' + imageUrl.split('/uploads/')[1];
+            } else if (uploadResponse.data.filename) {
+              imageUrl = `/uploads/${uploadResponse.data.filename}`;
+            }
+          }
+          
+          console.log('Final image URL for storage:', imageUrl);
+        } catch (uploadError) {
+          console.error('Image upload failed:', uploadError);
+          setError(`Image upload failed: ${uploadError.message}`);
+          setIsSaving(false);
+          return;
+        }
       }
 
+      // This is where the updated post data (including the new cover image URL) is sent to the server
       const postData = {
         ...formData,
         coverImage: imageUrl,
         tags: tagsArray
       };
 
+      console.log('Saving post with coverImage path:', imageUrl);
+
       if (isEditMode) {
-        // Fix: Use correct API path
+        // This is the PUT request that updates the blog post in the database
         await axios.put(`/api/blog/${id}`, postData, { withCredentials: true });
       } else {
-        // Fix: Use correct API path
         await axios.post('/api/blog', postData, { withCredentials: true });
       }
       
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to save post');
-      console.error(err);
+      console.error('Error saving post:', err);
     } finally {
       setIsSaving(false);
     }
@@ -213,7 +305,21 @@ const PostEditor = () => {
           />
           {previewUrl && (
             <div className="image-preview">
-              <img src={previewUrl} alt="Preview" />
+              <img 
+                src={previewUrl} 
+                alt="Preview" 
+                onError={(e) => {
+                  console.error("Image failed to load:", previewUrl);
+                  e.target.onerror = null;
+                  e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available';
+                }}
+              />
+              {previewUrl && (
+                <p className="image-info">
+                  <span className="image-filename">{formatImagePath(previewUrl)}</span>
+                  {imageFile && <span className="image-size">({(imageFile.size / 1024).toFixed(1)} KB)</span>}
+                </p>
+              )}
             </div>
           )}
         </div>

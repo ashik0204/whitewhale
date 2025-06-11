@@ -112,14 +112,46 @@
 }
 
 .image-preview {
-  margin-top: 15px;
+  margin-top: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  max-width: 100%;
 }
 
 .image-preview img {
   max-width: 100%;
   max-height: 300px;
+  display: block;
+  margin: 0 auto;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #555;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  align-items: center;
+}
+
+.image-filename {
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80%;
+  font-weight: bold;
+}
+
+.image-size {
+  color: #888;
 }
 
 .post-editor-loading {
