@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './FeaturesSection.css';
 import './common.css';
 
@@ -9,12 +9,15 @@ const FeaturesSection = () => {
   const [currentPage, setCurrentPage] = useState(0);
   // Number of features to show per page
   const featuresPerPage = 3;
+  // Flag to prevent URL-based navigation temporarily during manual navigation
+  const isManualNavigation = useRef(false);
   
   // Feature data from the content provided
   const features = [
     {
       id: 'lead-qualification',
       title: 'Lead Qualification',
+      image: 'https://webflow-prod-assets.s3.amazonaws.com/image-generation-assets/99ca3c86-4160-42b9-afb8-8515892a6e71.avif',
       overview: 'Use AI to qualify leads in real-time based on behavior, firmographics, and buyer intent signals.',
       benefits: [
         'Auto-score leads from CRM or uploaded lists',
@@ -28,6 +31,7 @@ const FeaturesSection = () => {
     {
       id: 'cold-outreach',
       title: 'Cold Outreach',
+      image: 'https://webflow-prod-assets.s3.amazonaws.com/image-generation-assets/e956181d-d16d-4870-97a1-c42ef64f1d5c.avif',
       overview: 'Launch AI-personalized outbound sequences across email, LinkedIn, and WhatsApp.',
       benefits: [
         'Create multi-touch cold campaigns',
@@ -41,6 +45,7 @@ const FeaturesSection = () => {
     {
       id: 'onboarding',
       title: 'Onboarding',
+      image: 'https://webflow-prod-assets.s3.amazonaws.com/image-generation-assets/c7501051-e84f-433e-9d71-cb263bef7f7e.avif',
       overview: 'Streamline new customer onboarding with dynamic workflows.',
       benefits: [
         'Trigger product walkthroughs and videos',
@@ -54,6 +59,7 @@ const FeaturesSection = () => {
     {
       id: 'omnichannel',
       title: 'Omnichannel Marketing',
+      image: '../assets/omni_chan.png',
       overview: 'Engage users across email, WhatsApp, LinkedIn, and in-app with unified campaigns.',
       benefits: [
         'Plan and launch across all platforms',
@@ -67,6 +73,7 @@ const FeaturesSection = () => {
     {
       id: 'customer-care',
       title: 'Customer Care',
+      image: '../assets/hi_care.png',  
       overview: 'Deliver faster, smarter support with AI-enhanced chatbots and automation.',
       benefits: [
         'Handle Tier 1 queries 24/7',
@@ -80,6 +87,7 @@ const FeaturesSection = () => {
     {
       id: 'analytics',
       title: 'Analytics',
+      image: 'https://cdn.prod.website-files.com/68340ccf437e81061978e1b1/68340ef4c9fca69696959a92_df0df3b8-7c23-4490-868e-19be90c8415b.avif',
       overview: 'Real-time dashboards that surface actionable insights from your data.',
       benefits: [
         'See metrics by persona, channel, or workflow',
@@ -93,6 +101,7 @@ const FeaturesSection = () => {
     {
       id: 'crm-integration',
       title: 'CRM Integration',
+      image: '../assets/hi_crm_1.png',
       overview: 'Plug into your CRM with zero-code, bi-directional sync.',
       benefits: [
         'Auto-update fields and lifecycle stages',
@@ -133,6 +142,48 @@ const FeaturesSection = () => {
   
   // Calculate total number of pages
   const totalPages = Math.ceil(features.length / featuresPerPage);
+
+  // Handle URL fragment for direct feature access
+  useEffect(() => {
+    // Check for URL fragment when component mounts
+    const handleHashChange = () => {
+      // Skip if we're doing manual navigation
+      if (isManualNavigation.current) {
+        isManualNavigation.current = false;
+        return;
+      }
+      
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#features-')) {
+        const featureId = hash.replace('#features-', '');
+        const feature = features.find(f => f.id === featureId);
+        
+        if (feature) {
+          // Find which page contains this feature
+          const featureIndex = features.findIndex(f => f.id === featureId);
+          const targetPage = Math.floor(featureIndex / featuresPerPage);
+          
+          // Set the page and select the feature
+          setCurrentPage(targetPage);
+          setSelectedFeatureId(featureId);
+          
+          // Scroll to features section
+          const featuresSection = document.getElementById('features');
+          if (featuresSection) {
+            featuresSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }
+    };
+
+    // Check on mount and when hash changes
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, [features, featuresPerPage]);
   
   // Get current features to display
   const getCurrentFeatures = () => {
@@ -140,14 +191,16 @@ const FeaturesSection = () => {
     return filteredFeatures.slice(start, start + featuresPerPage);
   };
   
-  // Navigation functions
+  // Navigation functions with manual navigation flag
   const goToNextPage = (e) => {
     e.stopPropagation();
+    isManualNavigation.current = true;
     setCurrentPage((prev) => (prev + 1) % totalPages);
   };
   
   const goToPrevPage = (e) => {
     e.stopPropagation();
+    isManualNavigation.current = true;
     setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
   };
   
@@ -157,23 +210,34 @@ const FeaturesSection = () => {
 
   // Toggle selected feature
   const selectFeature = (featureId) => {
-    setSelectedFeatureId(featureId === selectedFeatureId ? null : featureId);
+    const newFeatureId = featureId === selectedFeatureId ? null : featureId;
+    setSelectedFeatureId(newFeatureId);
+    
+    // Update the URL hash without full page reload
+    if (newFeatureId) {
+      window.history.replaceState(null, null, `#features-${newFeatureId}`);
+    } else {
+      window.history.replaceState(null, null, '#features');
+    }
   };
   
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowRight') {
+        isManualNavigation.current = true;
         goToNextPage(e);
       } else if (e.key === 'ArrowLeft') {
+        isManualNavigation.current = true;
         goToPrevPage(e);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPage, totalPages]);
-const filteredFeatures = features.filter(feature =>
-  feature.title.toLowerCase().includes(searchTerm.toLowerCase())
-);
+  
+  const filteredFeatures = features.filter(feature =>
+    feature.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <section className="section" id="features">
@@ -199,14 +263,21 @@ const filteredFeatures = features.filter(feature =>
           <div className="features-grid">
             {getCurrentFeatures().map((feature) => (
               <div 
-                key={feature.id} 
-                className={`feature-card ${selectedFeatureId === feature.id ? 'selected' : ''}`}
-                onClick={() => selectFeature(feature.id)}
-              >
+                  key={feature.id} 
+                  className={`feature-card ${selectedFeatureId === feature.id ? 'selected' : ''}`}
+                  onClick={() => selectFeature(feature.id)}
+                  style={{
+                    backgroundImage: `linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url(${feature.image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    borderRadius: '10px',
+                    color: '#111',
+                  }}
+                >
+
                 <div className="feature-header">
                   <h3>{feature.title}</h3>
                 </div>
-                
                 <div className="feature-content">
                   <p className="feature-overview">{feature.overview}</p>
                 </div>

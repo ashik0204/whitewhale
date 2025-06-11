@@ -17,10 +17,10 @@ const AdminDashboard = () => {
       try {
         // Get current user - Fix: Use correct API path
         const userResponse = await axios.get('/api/auth/me', { withCredentials: true });
-        console.log(userResponse.data.user);
-        console.log("error!")
+        // console.log(userResponse.data.user);
+        // console.log("error!")
         setUser(userResponse.data.user);
-        console.log("error?")
+        // console.log("error?")
         
         if (!userResponse.data.user || !['admin', 'editor'].includes(userResponse.data.user.role)) {
           navigate('/admin/login');
@@ -171,7 +171,7 @@ const AdminDashboard = () => {
           <div className="admin-section">
             <h2>User Management</h2>
             <p>This section will allow you to manage users (admin only).</p>
-            {/* User management will be implemented here */}
+            
           </div>
         )}
 

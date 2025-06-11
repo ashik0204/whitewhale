@@ -63,6 +63,81 @@
 .nav-link:hover:after {
   width: 100%;
 }
+.mega-dropdown {
+  position: absolute;
+  top: 100%;
+  left:0;
+  display: flex;
+  background: rgba(254, 248, 248, 0.85); /* Changed to semi-transparent */
+  backdrop-filter: blur(8px); /* Added blur effect for better readability */
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  /* width: 100%; */
+  justify-content: space-between;
+  border-radius: 12px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.mega-column {
+  top:0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 2rem;
+  justify-content: space-between;
+}
+
+.mega-column h4 {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 38, 0.9); /* Made slightly transparent */
+  font-size: 0.875rem;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  height:100px;
+  padding: 2em 0em;
+  align-items: center;
+  text-transform: uppercase;
+}
+
+.mega-item {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(221, 221, 221, 0.7); /* Made border slightly transparent */
+  /* border-shadow: 0 4px 24px rgba(0, 0, 0, 0.1); */
+  border-radius: 10px;
+  padding: 0.5rem 0;
+  text-decoration: none;
+  color: #222;
+  height:100px;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.6); /* Added semi-transparent background */
+}
+
+
+.mega-promo {
+  background-color: rgba(0, 0, 38, 0.85); /* Made slightly transparent */
+  color: white;
+  flex: 1.5;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 20em;
+}
+
+.mega-promo h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.learn-more {
+  margin-top: 1rem;
+  display: inline-block;
+  color: #00bfff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
 
 .cta-small {
   background-color: #0F4C81;

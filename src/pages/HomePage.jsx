@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
+import Hunt from '../components/Hunt';
 import Footer from '../components/Footer';
 import HeroSection from '../components/HeroSection';
 import AboutSection from '../components/AboutSection';
@@ -13,6 +14,7 @@ const HomePage = () => {
   return (
     <>
       <Header />
+      <Hunt/>
       <HeroSection />
       <FeaturesSection />
       <BeliefsSection />
