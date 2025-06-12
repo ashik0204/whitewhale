@@ -115,6 +115,7 @@ const FeaturesSection = () => {
     {
       id: 'data-enrichment',
       title: 'Data Enrichment',
+      image: '../assets/data-enrichment.png',
       overview: 'Enhance records with live data from third-party sources and AI.',
       benefits: [
         'Fill in missing job titles, emails, company size',
@@ -128,6 +129,7 @@ const FeaturesSection = () => {
     {
       id: 'workflow-engine',
       title: 'Workflow Engine',
+      image: '../assets/workflow.png',
       overview: 'Build visual customer journeys that trigger based on behavior, time, or intent.',
       benefits: [
         'Drag-and-drop builder',
