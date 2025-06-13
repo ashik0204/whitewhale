@@ -16,6 +16,7 @@
     "dev:client": "cd src && npm run dev"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "concurrently": "^8.0.1"
   },
   "devDependencies": {
