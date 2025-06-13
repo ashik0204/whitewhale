@@ -2,7 +2,8 @@ services:
   - type: web
     name: white-whaling
     env: node
-    buildCommand: npm install && npm run build
+    branch: new_branch
+    buildCommand: npm install && cd src && npm install && npm run build && cd .. && cd server && npm install && npm run build && cd ..
     startCommand: npm start
     envVars:
       - key: NODE_ENV
